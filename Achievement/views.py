@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
+from achi_selenium import 
 
-def scrap_here(request):
-    return HttpResponse('이 함수에서 스크래핑 하시고 결과 반환하면 됩니다')
+achi_selenium.achieve_data()
+
+def scrap_here(request): 
+
+    return HttpResponse()
