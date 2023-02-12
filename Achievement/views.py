@@ -1,10 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
-from achi_selenium import 
+from Achievement import achi_selenium
 
-achi_selenium.achieve_data()
+semester, figure = achi_selenium.achieve_data()
 
 def scrap_here(request): 
 
-    return HttpResponse()
+    return render(request, 'index.html',{
+        'semester': semester,
+        'figure' : figure,
+    })
+  

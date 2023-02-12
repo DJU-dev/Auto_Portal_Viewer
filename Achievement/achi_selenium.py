@@ -40,8 +40,8 @@ def achieve_data():
     #### 포탈 접속 입력 ####
     i_d = driver.find_element(By.CLASS_NAME, "id_input1")
     password = driver.find_element(By.CLASS_NAME, "id_input2")
-    i_d.send_keys("#")
-    password.send_keys("#")
+    i_d.send_keys(os.environ["D_ID"])
+    password.send_keys(os.environ["D_PASSWORD"])
     password.send_keys(Keys.ENTER)
     ######################
 
@@ -74,6 +74,8 @@ def achieve_data():
 
     soup = BeautifulSoup(driver.page_source, "lxml")
 
+    transmit_units = []
+    transmit_figure = []
     seeing_list = ["classification", "class_num", "subject", "div_class", "credit", "grade", "score", "rating"]
     figure_list = ["req_credit","acq_creidt","rating_cnt","rating_avg","r_scores","r_scores_avg","per_score"]
 
@@ -101,7 +103,7 @@ def achieve_data():
         else:
             b = b.group()    
         ###############전체 수치#################
-        globals()['sem_{0}_{1}_figure'.format(a,b)] = {}
+        globals()['sem_{}_{}_figure'.format(a,b)] = {}
         
         finds_text = soup.find(id=re.compile('INFODIV01_INFODIV01_Sum0{}TextBoxElement'.format(i))).get_text().replace(" ","").split("*")
         finds_text = list(filter(None, finds_text))
@@ -109,10 +111,13 @@ def achieve_data():
             pattern1 = re.compile("\d+.\d+")
             finds_text[k] = pattern1.search(finds_text[k]).group()    
             globals()['sem_{}_{}_figure'.format(a,b)]['{}'.format(figure_list[k])] = finds_text[k]
-                
-        print(globals()['sem_{}_{}_figure'.format(a,b)])
-        ############### 결과 #################     
-        globals()['sem_{0}_{1}'.format(a,b)] = DataFrame(seeing)
         
+        print(globals()['sem_{}_{}_figure'.format(a,b)])
+        ############### 결과 #################        
+        transmit_units.append(seeing)
+        transmit_figure.append(globals()['sem_{}_{}_figure'.format(a,b)])
+        
+        globals()['sem_{}_{}'.format(a,b)] = DataFrame(seeing)
         print(tabulate(DataFrame(seeing) , headers='keys', tablefmt='psql', showindex=True))
     
+    return transmit_units, transmit_figure
